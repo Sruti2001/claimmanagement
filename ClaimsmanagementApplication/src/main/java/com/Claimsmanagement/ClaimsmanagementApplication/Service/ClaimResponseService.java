@@ -25,13 +25,15 @@ public class ClaimResponseService {
 
 	public ClaimResponse updateClaimStatus(int claimId, ClaimResponse reponseDto) {
 		System.out.println("inside func");
+		System.out.println(reponseDto);
+		System.out.println(reponseDto.getClaimId());
 		List<Claim>newclaimfromdb= new ArrayList<>();
 		newclaimfromdb=claimService.getAllRecords();
 		if(!(newclaimfromdb.isEmpty())==true) {
 			System.out.println("got all records");
 		}
-		System.out.println((reponseDto.getResponseDetails()));
-		System.out.println((reponseDto.getResponseDetails()).getClass().getName());
+		//System.out.println(reponseDto.getResponseDetails());
+		//System.out.println((reponseDto.getResponseDetails()).getClass().getName());
 		for(int i=0;i<newclaimfromdb.size();i++) {
 			if(claimId==newclaimfromdb.get(i).getId()) {
 				

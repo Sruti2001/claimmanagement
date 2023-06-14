@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.Claimsmanagement.ClaimsmanagementApplication.Service.ClaimResponseService;
-//import com.Claimsmanagement.ClaimsmanagementApplication.Service.ClaimResponseService;
 import com.Claimsmanagement.ClaimsmanagementApplication.Service.ClaimService;
 import com.Claimsmanagement.ClaimsmanagementApplication.Service.ClaimTypeService;
 import com.Claimsmanagement.ClaimsmanagementApplication.entity.Claim;
@@ -35,6 +34,7 @@ public class ClaimController {
 	
 	@Autowired
 	private ClaimResponseService responseService;
+	
 	
 	//Endpoint1
 	@GetMapping("/types")
@@ -70,6 +70,7 @@ public class ClaimController {
 	public ClaimResponse processClaimRequest(@PathVariable int claimid,@RequestBody ClaimResponse reponseDto ) {
 //		return new ResponseEntity<List<ClaimResponse>>(responseService.updateClaimStatus(claimId,reponseDto),
 //				HttpStatus.OK);
+		
 		return responseService.updateClaimStatus(claimid,reponseDto);
 	}
 }
