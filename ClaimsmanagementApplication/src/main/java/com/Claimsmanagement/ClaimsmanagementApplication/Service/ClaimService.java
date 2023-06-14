@@ -4,7 +4,13 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
+
+import com.Claimsmanagement.ClaimsmanagementApplication.Exception.ClaimentDetailException;
+import com.Claimsmanagement.ClaimsmanagementApplication.Exception.InvalidClaimIdException;
+import com.Claimsmanagement.ClaimsmanagementApplication.Exception.InvalidIdProofTypeException;
+import com.Claimsmanagement.ClaimsmanagementApplication.Exception.PolicyAlreadyClaimedException;
 import com.Claimsmanagement.ClaimsmanagementApplication.entity.Claim;
 import com.Claimsmanagement.ClaimsmanagementApplication.repository.ClaimRepository;
 
@@ -19,9 +25,46 @@ public class ClaimService {
 	
 	//1.Endpoint2 implement 
 	public void addNewClaim(Claim claimDTO) {
+		List<Claim>claimfromdb= new ArrayList<>();
+		claimfromdb=(List<Claim>) claimRepository.findAll();
+		for(int i=0;i<claimfromdb.size();i++) {
+			if((claimfromdb.get(i).getUserName().equals(claimDTO.getUserName()))&&
+					(claimfromdb.get(i).getPolicyId()==claimDTO.getPolicyId())
+					&&(claimfromdb.get(i).getClaimStatus().equals("Approved"))) {
+				throw new PolicyAlreadyClaimedException();
+		}
+		claimDTO.setClaimStatus("New");
 		
+		claimDTO.setClaimDate(LocalDate.now());
+		
+		if(claimDTO.getClaimTypeId()==1) {
+			claimDTO.setResponseETA((claimDTO.getClaimDate()).plusDays(7));
+		}else if(claimDTO.getClaimTypeId()==2) {
+			claimDTO.setResponseETA((claimDTO.getClaimDate()).plusDays(30));
+		}else if(claimDTO.getClaimTypeId()==3) {
+			claimDTO.setResponseETA((claimDTO.getClaimDate()).plusDays(15));
+		}else {
+			throw new InvalidClaimIdException();
+		}
+		
+		if(claimDTO.getClaimTypeId()==2) {
+			if((claimDTO.getClaimantFullName().equals(claimDTO.getUserName()))) {
+				if((claimDTO.getClaimantAddress().equals(""))||(claimDTO.getClaimantDateOfBirth()==null)
+						||(claimDTO.getClaimantIDProofType().equals("")||(claimDTO.getClaimantIDProofNumber().equals("")))){
+					throw new ClaimentDetailException();
+				
+			}
+		}
+	}
+		
+		if((claimDTO.getClaimantIDProofType().equals("Passport"))||(claimDTO.getClaimantIDProofType().equals("Aadhar"))||
+					(claimDTO.getClaimantIDProofType().equals("PAN"))||(claimDTO.getClaimantIDProofType().equals("DrivingLicense"))) {
 		claimRepository.save(claimDTO);
 		System.out.println("Successfully saved");
+			}else {
+				throw new InvalidIdProofTypeException();
+			}
+		}
 	}
 
 
@@ -29,16 +72,23 @@ public class ClaimService {
 	public List<Claim> getNewClaims() {
 		List<Claim>newclaimfromdb= new ArrayList<>();
 		List<Claim>newclaimtoreturn= new ArrayList<>();
-		List<Claim>temp= new ArrayList<>();
+		String newstatus="New";
 		newclaimfromdb=(List<Claim>) claimRepository.findAll();
+//		System.out.println(newclaimfromdb.getClass().getName());
+//		System.out.println(newclaimfromdb.size());
 		for(int i=0;i<newclaimfromdb.size();i++) {
-			if(newclaimfromdb.get(i).getClaimStatus()=="New") {
-				temp=(List<Claim>)newclaimfromdb.get(i);
-				newclaimtoreturn.addAll(temp);	
+//			System.out.println("in func1");
+//			System.out.println(newclaimfromdb.get(i));
+//			System.out.println((newclaimfromdb.get(i)).getClass().getName());
+//			System.out.println(newclaimfromdb.get(i).getClaimStatus());
+//			System.out.println((newclaimfromdb.get(i).getClaimStatus()).getClass().getName());
+			if(newclaimfromdb.get(i).getClaimStatus().equals(newstatus)) {
+				//System.out.println("in func");
+				newclaimtoreturn.add(newclaimfromdb.get(i));	
 			}
 		}
-		System.out.println("size: ");
-		System.out.println(newclaimtoreturn.size());
+//		System.out.println("size: ");
+//		System.out.println(newclaimtoreturn.size());
 		if(newclaimtoreturn.size()==0) {
 			return null;
 		}else {
@@ -57,6 +107,10 @@ public class ClaimService {
 		}
 		return null;
 	}
-
-
+	//Endpoint5-function to get claims
+	public List<Claim> getAllRecords(){
+	List<Claim>newclaimfromdb= new ArrayList<>();
+	newclaimfromdb=(List<Claim>) claimRepository.findAll();
+	return newclaimfromdb;
+}
 }

@@ -1,6 +1,8 @@
 package com.Claimsmanagement.ClaimsmanagementApplication.entity;
 
-import java.util.Date;
+import java.time.LocalDate;
+
+import org.springframework.lang.NonNull;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -18,17 +20,26 @@ public class ClaimResponse {
 		@Id
 		@GeneratedValue(strategy= GenerationType.AUTO)
 		private int id;
-		
-		@Column(name="ResponseDate")
-		private Date responseDate;
+		@NonNull
+		@Column(name="ResponseDate",columnDefinition = "DATE")
+		private LocalDate responseDate;
+		@NonNull
 		@Column(name="ResponseDetails",length=500)
 		private String responseDetails;
+		@NonNull
 		@Column(name="ClaimId",length=10)
 		private int claimId;
 		
 		public ClaimResponse() {
 			super();
 			
+		}
+		public ClaimResponse( int id, LocalDate responseDate,String responseDetails,int claimId) {
+			super();
+			this.id = id;
+			this.responseDate = responseDate;
+			this.responseDetails = responseDetails;
+			this.claimId = claimId;
 		}
 
 		public int getId() {
@@ -39,11 +50,11 @@ public class ClaimResponse {
 			this.id = id;
 		}
 
-		public Date getResponseDate() {
+		public LocalDate getResponseDate() {
 			return responseDate;
 		}
 
-		public void setResponseDate(Date responseDate) {
+		public void setResponseDate(LocalDate responseDate) {
 			this.responseDate = responseDate;
 		}
 

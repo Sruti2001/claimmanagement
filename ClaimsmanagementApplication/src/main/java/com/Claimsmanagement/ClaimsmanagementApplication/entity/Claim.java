@@ -11,18 +11,18 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.Future;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Entity
 @Data
-//@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
-//@DiscriminatorColumn(name="ClaimStatus")
+@AllArgsConstructor
+@NoArgsConstructor
 @Table(name="claims")
 public class Claim {
 
@@ -37,12 +37,12 @@ public class Claim {
 		@NonNull
 		@Column(name="UserName",length=10)
 		private String userName;
-		 @NonNull
+		@NonNull
 		@Column(name="SubscriptionId",length=10)
 		private int subscriptionId;
-		 @NonNull
-		@Column(name="ClaimDate")
-		private LocalDate claimDate;
+		@NonNull
+		@Column(name="ClaimDate",columnDefinition = "DATE")
+		private LocalDate claimDate = LocalDate.now();
 		@Column(name="ClaimTypeId",length=10)
 		private int claimTypeId;
 		 @NonNull
@@ -81,11 +81,7 @@ public class Claim {
 		 @NonNull
 		@Future
 		@JoinColumn(name="ResponseETA")
-		private Date responseETA;
-		@ManyToOne
-		private ClaimType claimtype;
-		@OneToOne
-		private ClaimResponse claimresponse;
+		private LocalDate responseETA;
 		 
 		public Claim(){
 			
@@ -94,7 +90,7 @@ public class Claim {
 		}
 		public Claim(int id,int policyId,String userName, int subscriptionId,LocalDate claimDate,int claimTypeId,String claimSummary,
 				String claimDetails,String claimStatus,Boolean isRaisedByPolicyHolder,String claimantFullName,Date claimantDateOfBirth,
-				String claimantAddress,String claimantIDProofType,String claimantIDProofNumber,Date responseETA){
+				String claimantAddress,String claimantIDProofType,String claimantIDProofNumber,LocalDate responseETA){
 			
 			 super();
 			 this.id = id;
@@ -205,10 +201,10 @@ public class Claim {
 		public void setClaimantIDProofNumber(String claimantIDProofNumber) {
 			this.claimantIDProofNumber = claimantIDProofNumber;
 		}
-		public Date getResponseETA() {
+		public LocalDate getResponseETA() {
 			return responseETA;
 		}
-		public void setResponseETA(Date responseETA) {
+		public void setResponseETA(LocalDate responseETA) {
 			this.responseETA = responseETA;
 		}
 

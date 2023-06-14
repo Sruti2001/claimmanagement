@@ -14,10 +14,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.Claimsmanagement.ClaimsmanagementApplication.Service.ClaimResponseService;
 //import com.Claimsmanagement.ClaimsmanagementApplication.Service.ClaimResponseService;
 import com.Claimsmanagement.ClaimsmanagementApplication.Service.ClaimService;
 import com.Claimsmanagement.ClaimsmanagementApplication.Service.ClaimTypeService;
 import com.Claimsmanagement.ClaimsmanagementApplication.entity.Claim;
+import com.Claimsmanagement.ClaimsmanagementApplication.entity.ClaimResponse;
 //import com.Claimsmanagement.ClaimsmanagementApplication.entity.ClaimResponse;
 import com.Claimsmanagement.ClaimsmanagementApplication.entity.ClaimType;
 
@@ -31,8 +33,8 @@ public class ClaimController {
 	@Autowired
 	private ClaimTypeService claimTypeService;
 	
-	//@Autowired
-	//private ClaimResponseService responseService;
+	@Autowired
+	private ClaimResponseService responseService;
 	
 	//Endpoint1
 	@GetMapping("/types")
@@ -48,6 +50,7 @@ public class ClaimController {
 		 System.out.println("post new claim verified");
 		return new ResponseEntity<HttpStatus>(HttpStatus.CREATED);
 	}
+	
 	//Endpoint3
 	@GetMapping("")
 	public List<Claim> getNewClaims() {
@@ -63,9 +66,10 @@ public class ClaimController {
 	}
 	
 	//Endpoint5
-	//@PutMapping("/{claimid}/process")
-	//public ResponseEntity<List<ClaimResponse>> processClaimRequest(@PathVariable Integer claimId,@RequestBody ClaimResponse reponseDto ) {
-	//	return new ResponseEntity<List<ClaimResponse>>(responseService.updateClaimStatus(claimId,reponseDto),
-	//			HttpStatus.OK);
-	//}
+	@RequestMapping(method=RequestMethod.PUT, value="/{claimid}/process")
+	public ClaimResponse processClaimRequest(@PathVariable int claimid,@RequestBody ClaimResponse reponseDto ) {
+//		return new ResponseEntity<List<ClaimResponse>>(responseService.updateClaimStatus(claimId,reponseDto),
+//				HttpStatus.OK);
+		return responseService.updateClaimStatus(claimid,reponseDto);
+	}
 }
